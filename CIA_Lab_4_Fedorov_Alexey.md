@@ -38,13 +38,13 @@ Then I successfully compiled nginx.
 
 ## 1.2. Define the root directory and then two virtual hosts (and configure DNS records or wildcard accordingly): aaa.stX.sne22.ru, bbb.stX.sne22.ru
 
-I decided to start with DNS. I added 2 records in my zone st17.sne24.ru
+I began by configuring DNS. I added two records to my DNS zone, **st17.sne24.ru**.
 
 ![image](https://github.com/user-attachments/assets/83721768-8c45-4d04-8fb1-e7754ad942c2)
 
 ![image](https://github.com/user-attachments/assets/690544e1-4899-4d1f-868b-cea188eb49ce)
 
-Then I create directory for each server in nginx.
+Next, I set up directories for each server within the Nginx configuration.
 
 ![image](https://github.com/user-attachments/assets/b389b7d7-0ded-4243-a5e1-39fbb0cff2a2)
 
@@ -56,13 +56,13 @@ For each virtual host, I created an `index.html` file containing the following c
 
 ![image](https://github.com/user-attachments/assets/01ed1f5b-1b3f-45b6-9c80-b813136602d9)
 
-Next I implemented `nginx.conf` to serve two different sites.
+After that, I configured the `nginx.conf` file to host and serve two distinct websites.
 
 ![image](https://github.com/user-attachments/assets/c1fd1050-8d23-46bc-a2f7-1556fc294904)
 
 ## 1.4 Check the configuration syntax, start the daemon and enable it at boot time.
 
-Let's test it. I will use `curl` for this purpose. But firstly I need to check syntax and up nginx.
+Let’s test it. I’ll use curl to verify the setup. But before that, I need to check the Nginx configuration syntax and restart the Nginx service to apply the changes.
 
 `sudo ./nginx -t`
 
@@ -72,11 +72,11 @@ Syntax is correct. Let's boot.
 
 ![image](https://github.com/user-attachments/assets/e09317c8-fb5a-4abd-9582-33d2bd8f73bd)
 
-Nginx started successfully. To enable it, I need to create systemd service unit in `/etc/systemd/system/nginx.service`. Let's implement it.
+Nginx has started successfully. To ensure it runs automatically, I’ll create a systemd service unit file in `/etc/systemd/system/nginx.service`. Let’s proceed with setting it up.
 
 ![image](https://github.com/user-attachments/assets/bae66d3d-5339-4faa-ad08-7d5f97992d0c)
 
-After this I have to enable service.
+Next step is to enable the service so that it starts automatically on system boot. I’ll do this using the `systemctl enable nginx` command.
 
 ![image](https://github.com/user-attachments/assets/44a909a9-686b-479d-bd88-4eb870ffb691)
 
@@ -84,7 +84,7 @@ Done! Nginx will start with boot.
 
 # 1.5 Use curl to display the contents of a full HTTP/1.1 session served by your server.
 
-Now I did 2 requests to `server1.st17.sne24.ru` and `server2.st17.sne24.ru`.
+Now I’ve sent two requests: one to `server1.st17.sne24.ru` and another to `server2.st17.sne24.ru`.
 
 ![image](https://github.com/user-attachments/assets/14617b51-9e87-4f9a-94f6-e496942b5216)
 
@@ -141,7 +141,7 @@ Everyting works!
 
 # Task 2. SSL/TLS
 
-I decided to start with 2nd part of topic
+I’ve decided to begin with the second part of the topic.
 
 ## 2.2 Describe how you created your own certificate(s) e.g. with Let’s encrypt (certbot) or selfsigned and re-validate every virtual-host . Explain your security tuning process.
 
@@ -154,7 +154,6 @@ Generating key:
 `openssl genrsa -out ca.key 2048`
 
 ![image](https://github.com/user-attachments/assets/ca4d06d1-f07c-4b55-8df6-92901a92cced)
-
 
 Generating certificate:
 
@@ -209,7 +208,7 @@ Run syntax check.
 
 ![image](https://github.com/user-attachments/assets/ee5b138a-433d-4e12-b5db-674e58cf33a5)
 
-I reloaded nginx. Lets see how it works. I will begin with `curl`.
+I reloaded Nginx to apply the changes. Now, let’s test how it works. I’ll start by using `curl` to make requests.
 
 `sudo curl -v https://server1.st17.sne24.ru --cacert /usr/local/nginx/ssl/ca.crt`
 
