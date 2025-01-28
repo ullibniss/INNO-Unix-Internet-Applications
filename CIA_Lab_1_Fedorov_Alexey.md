@@ -35,7 +35,7 @@ Network configured.
 
 ![image](https://github.com/user-attachments/assets/97db09ab-f8ea-417c-8bdf-e871d319519f)
 
-Let's install DHCP service.
+Let's install DHCP server.
 
 ![image](https://github.com/user-attachments/assets/c2164f47-9052-4a5d-ab36-daed9815c3ae)
 
@@ -79,7 +79,7 @@ Next, I downloaded the ISO file for the Ubuntu server, mounted it to the filesys
 
 ![image](https://github.com/user-attachments/assets/e0761a84-12f7-4696-8070-ccac816decf8)
 
-![image](https://github.com/user-attachments/assets/9a7b412a-909b-4b0b-8d67-59a784e55710)
+![image](https://github.com/user-attachments/assets/0376eff4-d524-49e8-97e2-5464ce9f4309)
 
 As an HTTP server I used apache. After I installed apache I moved to the “/var/www/html” folder ISO file.
 
@@ -289,3 +289,53 @@ Or print partition table.
 The Protective MBR plays a crucial role in safeguarding GPT disks. As an essential component of the GPT scheme, it ensures both backward compatibility and data integrity. It acts as a protective shield, preventing legacy software—which may not support GPT—from damaging or corrupting the GPT structure. When a disk utility or operating system that only recognizes MBR reads the Protective MBR, it interprets the disk as having a single, large partition that is already in use. This prevents the utility or OS from attempting to modify the disk or overwrite partition information, thereby preserving the integrity of the GPT layout.
 
 # Task 3. Partitions
+
+## 3.1. Verify the GPT schema of your Ubuntu machine.
+
+Initially, I utilized the **lsblk** tool to identify existing disks and partitions. **lsblk** is a command-line utility in Linux designed to display information about all available or specified block devices. It presents details about storage devices and their partitions in a clear, tree-like structure. ( It is different from previous question, because i decided to use VM ).
+
+![image](https://github.com/user-attachments/assets/d249ed37-1c1a-4447-911b-84a4c956eae2)
+
+Next, I used the **parted** tool to determine the partitioning scheme in use. **parted** is a command-line utility in Linux for managing disk partitions, supporting both MBR and GPT schemes. I started by running the command with the `/dev/nvme0n1` parameter, which opened the internal interface of **parted**. Inside the interface, I executed the `print` command, and the output displayed **"Partition Table: gpt"**. This confirmed that the GPT partitioning scheme is being used on my system.
+
+![image](https://github.com/user-attachments/assets/bab7aa62-73a3-4fcc-843e-10c6fc7a4b63)
+
+
+## 3.2. Use the dd utility to dump the Protective MBR and GPT into a file in your home directory. The dump should contain up to first partition entry (Inclusive). Note: upload the dump file to your moodle.
+
+The first sector of the disk contains the Protective MBR, the second sector holds the GPT Header, and the third sector includes the first partition entry. In my system, as I later discovered, each partition entry is 128 bytes in size. Since the first two sectors (Protective MBR and GPT Header) are each 512 bytes (as indicated by the block size), I needed to dump a total of 1,152 bytes (512 + 512 + 128). To achieve this, I used the following command:
+
+`sudo dd if=/dev/sda of=/home/ullibniss/dump bs=128 count=9`
+
+![image](https://github.com/user-attachments/assets/d329c37f-1d9f-457d-8022-2680ce1b6533)
+
+## 3.3. Load the dump file into a hex dump utility (e.g. 010 editor) to look at the raw data in the file.
+
+For analyzing the dump file I used the “https://hex-works.com/” utility.
+
+![image](https://github.com/user-attachments/assets/6cc6d14d-504e-4522-b67e-d0fc2937d9b2)
+
+##  3.5 Name two differences between primary and logical partitions in an MBR partitioning scheme.
+
+### Number Limitations:
+- **Primary Partitions:**  
+  The MBR partitioning scheme allows for a maximum of **four primary partitions**. If more partitions are needed, one of these primary slots must be used to create an **extended partition**.
+  
+- **Logical Partitions:**  
+  Logical partitions are created **within an extended partition**. While the number of logical partitions is theoretically unlimited, it is subject to the operating system’s constraints. These partitions are used to overcome the four-partition limit of MBR.
+
+### Usage and Booting:
+- **Primary Partitions:**  
+  Only primary partitions can be marked as **active** and are used for **booting an operating system**. The system's bootloader, such as GRUB or Windows Boot Manager, typically resides on a primary partition.
+
+- **Logical Partitions:**  
+  Logical partitions **cannot be set as active** and are primarily used for **additional data storage**. They are not intended for booting an operating system and are instead utilized to organize extra storage space.
+
+# References:
+1. PXE server on Ubuntu -
+https://wiki.ubuntu.com/UEFI/PXE-netboot-install
+2. PXE server on Astra Linux-
+https://wiki.astralinux.ru/pages/viewpage.action?pageId=263031254
+3. UEFI Specification -
+https://uefi.org/specs/UEFI/2.10/05_GUID_Partition_Table_Format.html
+4. GPT - https://thestarman.pcministry.com/asm/mbr/GPT.htm
