@@ -82,7 +82,7 @@ Next step is to enable the service so that it starts automatically on system boo
 
 Done! Nginx will start with boot.
 
-# 1.5 Use curl to display the contents of a full HTTP/1.1 session served by your server.
+## 1.5 Use curl to display the contents of a full HTTP/1.1 session served by your server.
 
 Now I’ve sent two requests: one to `server1.st17.sne24.ru` and another to `server2.st17.sne24.ru`.
 
@@ -204,7 +204,34 @@ Let's modify configuration.
 
 ![image](https://github.com/user-attachments/assets/455897da-f3c8-41b5-b22f-7921b7c451b8)
 
-Run syntax check.
+**Explanation of Parameters**:
+
+1. **ssl_certificate /usr/local/nginx/ssl/<>.crt**:  
+   - Specifies the path to the server's SSL certificate file. This certificate is used to establish the server's identity to clients.
+
+2. **ssl_certificate_key /usr/local/nginx/ssl/<>.key**:  
+   - Specifies the path to the private key associated with the SSL certificate. This key is used to encrypt and decrypt data during the SSL/TLS handshake.
+
+3. **ssl_protocols TLSv1.2 TLSv1.3**:  
+   - Restricts the server to use only the specified secure TLS versions (TLS 1.2 and 1.3). This ensures that older, less secure protocols (like SSLv3 or TLSv1.0) are disabled.
+
+4. **ssl_ciphers HIGH:!aNULL:!MD5**:  
+   - Defines the allowed cipher suites for encryption:  
+     - **HIGH**: Enables only strong, high-security ciphers.  
+     - **!aNULL**: Excludes ciphers that do not provide authentication.  
+     - **!MD5**: Excludes ciphers that use the MD5 algorithm, which is considered weak for message integrity.
+
+5. **ssl_prefer_server_ciphers on**:  
+   - Configures the server to prioritize its own list of cipher suites over the client's preferences. This ensures that the most secure ciphers are used.
+
+6. **ssl_session_cache shared:SSL:10m**:  
+   - Enables a shared cache for SSL session parameters. This improves performance by allowing clients to reuse session data, avoiding the need for a full SSL/TLS handshake on repeated connections. The cache is shared across worker processes and is set to store data for 10 minutes.
+
+7. **ssl_session_timeout 10m**:  
+   - Specifies the duration (10 minutes) for which an SSL session remains valid in the cache. After this time, the session expires, and a new handshake is required.
+
+
+Final syntax check.
 
 ![image](https://github.com/user-attachments/assets/ee5b138a-433d-4e12-b5db-674e58cf33a5)
 
