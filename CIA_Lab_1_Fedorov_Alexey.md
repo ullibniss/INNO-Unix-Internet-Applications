@@ -120,4 +120,172 @@ Deploying a DHCP server on the SNE network might disrupt the existing network in
 
 # Task 2. PXE Client Setup
 
+## 2.1. Create the second virtual machine using VirtualBox in order to test the PXE service.
 
+For testing the PXE server, I created the second VM. As a type of network interface I set the internal network. It must get network configuration from the DHCP server.
+
+![image](https://github.com/user-attachments/assets/31f4afd1-63b7-48cc-ad40-2753f5b1d3a0)
+
+## 2.2. Change the boot order
+
+I changed boot order in VM settings
+
+![Screenshot from 2025-01-28 02-16-53](https://github.com/user-attachments/assets/67430733-acba-4b5c-b7b3-0b9fac1dc4ad)
+
+## 2.3. Show that your PXE client takes the IP.
+
+I booted system and got the installation menu, which I prepared via grub.cfg file. 
+
+![Screenshot from 2025-01-28 02-49-19](https://github.com/user-attachments/assets/02212dd3-ea5d-47de-819f-5d34c8545759)
+
+The PXE client got network configuration from the DHCP server.
+
+![Screenshot from 2025-01-28 02-28-02](https://github.com/user-attachments/assets/c78a43d3-8aed-44b7-823d-b12a50fd75c5)
+
+## 2.4. Boot and install a new system with it and show the proof in the report.
+
+After that, the installation process was started.
+
+![image](https://github.com/user-attachments/assets/2b11b8bf-ecb3-439a-b7bb-179c55982e29)
+
+![image](https://github.com/user-attachments/assets/9dd64c1f-5fea-4b93-a60a-7947c8c0eee0)
+
+And I got Ubuntu 22 server.
+
+![image](https://github.com/user-attachments/assets/059ef358-317f-4dfe-99cd-4d7c6fa3014c)
+
+# Task 2 - Questions to answer
+
+## 2.1 Briefly explain UEFI with secure boot enabled, UEFI without secure boot, and BIOS PXE booting approaches.
+
+UEFI (Unified Extensible Firmware Interface) is a contemporary firmware interface designed to replace the older BIOS system. It is responsible for hardware initialization and launching the operating system. A key security feature within UEFI is Secure Boot, which ensures that only verified and trusted software can execute during the boot process. This feature helps block malware from loading before the OS starts, thereby strengthening system security. Secure Boot works by checking the digital signatures of bootloaders and drivers to confirm their authenticity and integrity. However, when UEFI is used without Secure Boot, it lacks this signature verification capability, allowing the system to boot unsigned or altered bootloaders and operating systems. This can be beneficial for scenarios like testing, custom OS configurations, or running unsigned software.
+
+On the other hand, BIOS (Basic Input/Output System) is the legacy firmware interface used for hardware initialization and OS booting. It predates UEFI and has certain limitations, such as less efficient handling of larger storage devices. In BIOS, PXE (Preboot Execution Environment) booting enables the network interface card to connect to a PXE server and load a boot image, facilitating remote booting and OS installation over a network.
+
+### 2.1.1 How do they work? Explain with a simple diagram.
+
+### UEFI with Secure Boot Enabled
+
+1. When the system starts, the UEFI firmware begins its initialization process.  
+2. UEFI verifies the digital signatures of the bootloader and drivers to ensure their authenticity.  
+3. If the signatures are valid, the bootloader is permitted to run. If the signatures are invalid or missing, the boot process is halted.  
+4. Once verified, the bootloader proceeds to load the operating system.
+
+![image](https://github.com/user-attachments/assets/54b74d8c-1e30-44f2-a0c6-abef490db4e0)
+
+### UEFI without Secure Boot
+
+1. The system powers up, and UEFI initializes the hardware.
+2. UEFI loads the bootloader without verifying signatures.
+3. The bootloader loads the OS.
+
+![image](https://github.com/user-attachments/assets/f30b34f7-5fd7-4f2a-9535-eaf57ba73df4)
+
+### BIOS PXE Booting
+
+1. When the system powers on, the BIOS firmware starts its initialization process.  
+2. The BIOS initializes the Network Interface Card (NIC) and sends a request over the network to a PXE server.  
+3. The PXE server responds by sending a boot image to the system.  
+4. The received boot image is loaded, initiating the OS installation or boot process.
+
+![image](https://github.com/user-attachments/assets/0b6d320a-ebe2-4429-9d84-1ffb690fa2b8)
+
+## 2.2 What is a GPT?
+
+GPT (GUID Partition Table) is a modern standard for partitioning storage devices such as hard drives and SSDs. It is integrated into the UEFI specification and defines the structure of data on a disk. The term GUID stands for Globally Unique Identifier, meaning each partition on the drive is assigned a unique identifier. This ensures that partition information remains distinct and avoids any overlap or conflicts.
+
+### 2.2.1. What is its general layout? Explain each element.
+
+1. **Protective MBR (Master Boot Record):**  
+   Located in the first sector (512 bytes) of a GPT-partitioned disk, the Protective MBR serves as a safeguard. It prevents older MBR-based tools from mistakenly identifying the GPT disk as unpartitioned or attempting to overwrite it, ensuring compatibility and protection.
+
+2. **GPT Header:**  
+   The GPT Header contains critical metadata about the partition table and the disk's layout. It includes information such as the disk's unique identifier, the location of the partition table, and the number of partition entries.
+
+3. **Partition Entry Array (Partition Table):**  
+   This array stores detailed information about each partition on the disk, including its start and end points, size, type, and attributes. It defines the structure and organization of the disk's partitions.
+
+4. **Partition Data:**  
+   This is the actual storage space on the disk allocated for partitions, where data and files are stored. Each partition's boundaries and properties are determined by the corresponding entries in the Partition Entry Array.
+
+5. **Backup GPT Header and Partition Table:**  
+   A duplicate of the GPT Header and Partition Table is stored at the end of the disk. This backup provides redundancy, allowing the partition information to be recovered in case the primary GPT Header or Partition Table becomes corrupted or lost.
+
+### 2.2.2. What is the role of a partition table?
+
+### Role of a Partition Table
+
+1. **Organization of Data:**  
+   The partition table manages how the storage device is divided into distinct sections called partitions. Each partition can be allocated for specific purposes, such as storing the operating system, applications, or user data, enabling efficient data organization.
+
+2. **Defining Partition Boundaries:**  
+   It specifies the size, starting point, and ending point of each partition on the disk. This information is crucial for the operating system to identify where one partition ends and another begins, ensuring proper data access and storage.
+
+3. **Partition Types:**  
+   The partition table identifies the type of each partition (e.g., primary, extended, logical) and the file system used (such as NTFS, FAT32, or ext4). This helps the operating system understand how to interact with and manage data within each partition.
+
+4. **Booting Information:**  
+   For bootable partitions, the partition table includes essential details required for system startup. This is particularly important for systems using BIOS or UEFI firmware, as it indicates which partition contains the bootloader, enabling the system to boot correctly.
+
+5. **Managing Multiple Operating Systems:**  
+   In dual-boot or multi-boot setups, where multiple operating systems are installed on the same drive, the partition table tracks each OS's partition. This allows users to choose which operating system to boot during startup.
+
+6. **Disk Management:**  
+   The partition table facilitates easier disk management by enabling users to create, delete, resize, or modify partitions without impacting data stored in other partitions—provided these actions are performed correctly.
+
+7. **Redundancy and Recovery:**  
+   In GPT-based systems, the partition table is stored in multiple locations on the disk (both at the beginning and the end). This redundancy ensures that partition information can be recovered if the primary partition table becomes corrupted, enhancing data reliability and recovery options.
+
+## 2.3. What is gdisk?
+
+**Gdisk** is a command-line tool used for managing GUID Partition Table (GPT) disks in Linux and other Unix-like operating systems. It allows users to create, delete, and modify partitions on disks formatted with the GPT scheme. Specifically designed for GPT disks, Gdisk is ideal for systems that need the advanced features and flexibility offered by the GPT partitioning standard.
+
+### 2.3.1 How Does Gdisk Work?
+
+Gdisk operates through a command-line interface, enabling users to interact with and manage the partition tables of GPT disks. Here’s what you can do with Gdisk:
+
+1. **Create Partitions:**  
+   Add new partitions to a GPT disk by specifying their size, type, and starting location. This allows for precise allocation of disk space for different purposes.
+
+2. **Delete Partitions:**  
+   Remove existing partitions from the disk, freeing up space for new partitions or reorganizing the disk layout as needed.
+
+3. **View Partition Information:**  
+   Display the current partition table along with detailed information about each partition, such as its size, type, and location on the disk.
+
+4. **Resize Partitions:**  
+   While Gdisk does not directly resize partitions, you can delete and recreate partitions with adjusted sizes to effectively resize them.
+
+5. **Change Partition Types:**  
+   Assign or modify the types of partitions using GUIDs (Globally Unique Identifiers) to define their purpose, such as for system, data, or swap partitions.
+
+6. **Backup and Recovery:**  
+   Create backups of GPT headers and partition tables to facilitate recovery in case of corruption or data loss. Gdisk can also attempt to recover deleted partitions if backup information is still available.
+
+7. **Convert MBR to GPT:**  
+   Convert a disk from the older Master Boot Record (MBR) partitioning scheme to GPT without data loss, making it compatible with modern systems that require GPT.
+
+8. **Check Disk Integrity:**  
+   Validate the GPT structure to ensure that headers and partition entries are consistent and free of errors, helping maintain the disk’s reliability and functionality.
+
+Gdisk is a powerful tool for managing GPT disks, offering advanced capabilities for partitioning, recovery, and disk maintenance in Linux and Unix-like systems.
+
+### 2.3.3 Provide a simple practice.
+
+To use Gdisk, we need to specify the disk we want to work with as a parameter. For example, to manage the disk `/dev/nvme0n1p9`, run the command.
+
+![image](https://github.com/user-attachments/assets/017c345b-6919-4944-be29-7309580233c5)
+
+We can backup GPT data to file.
+
+![image](https://github.com/user-attachments/assets/064a2fa9-bfd7-40fd-b1e9-b73c5a822bec)
+
+Or print partition table.
+
+![image](https://github.com/user-attachments/assets/ce06529b-b8f2-405c-9baa-101e432f31e5)
+
+## 2.4 What is a Protective MBR and why is it in the GPT?
+
+The Protective MBR plays a crucial role in safeguarding GPT disks. As an essential component of the GPT scheme, it ensures both backward compatibility and data integrity. It acts as a protective shield, preventing legacy software—which may not support GPT—from damaging or corrupting the GPT structure. When a disk utility or operating system that only recognizes MBR reads the Protective MBR, it interprets the disk as having a single, large partition that is already in use. This prevents the utility or OS from attempting to modify the disk or overwrite partition information, thereby preserving the integrity of the GPT layout.
+
+# Task 3. Partitions
