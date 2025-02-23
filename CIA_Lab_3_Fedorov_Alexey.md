@@ -28,7 +28,7 @@ Downloaded postfix source code, signature and gpg public key from offical websit
 
 ### 1.1.c Because it is important that an MTA be correct and secure it is often signed using a digital PGP signature. If your MTA is signed then make sure you have downloaded the correct sources by checking the validity of the key and the signature
 
-I downloaded gpg key from https://github.com/Exim/exim/wiki/EximSecurity. Let's import it
+I downloaded gpg key from https://github.com/Exim/exim/wiki/EximSecurity. Let's import it.
 
 ```
 gpg --import wietse.pgp
@@ -81,22 +81,27 @@ There wee options during install. I stayed them default.
 
 Postfix installed!
 
+## 2 Most of the options for an MTA can be found in a configuration file that will be loaded when the MTA starts. It is recommended to start with an example configuration that looks a lot like what you need for now. Show how you adapt it to your needs.
 
-# 3. Configure
+Here is my configuration `/etc/postfix/main.cf`:
+
+![image](https://github.com/user-attachments/assets/cd0d6376-449d-4251-a42b-aa2a2d5b4f9b)
+
+I reconfigured mynetworks and mydestination.
 
 ## 3.1 Add a local account on your experimental machine and make sure that the MTA can deliver mail to it. Show the required configuration.
 
-I created user on my machine
+I created user on my machine.
 
 ![image](https://github.com/user-attachments/assets/000c81df-13da-47c9-a817-a9baaa05354c)
 
-Then i tried to send mail to it
+Then i tried to send mail to it.
 
 ```
 echo "Test message for local account" | mail -s "Local Mail Test" test-postfix
 ```
 
-Let's check `test-postfix` user's mail
+Let's check `test-postfix` user's mail.
 
 ![image](https://github.com/user-attachments/assets/83cb36f3-350e-46ad-98d1-3123b0b73f4e)
 
@@ -109,7 +114,7 @@ Here is message with all headers:
 
 ## 3.3 Also make sure that any email intended for postmaster@st<X>.sne23.ru is delivered to this account. Show the full email as delivered to the new account and the required configuration.
 
-Lets make alias for mail server and update them
+Lets make alias for mail server and update them.
 
 ```
 sudo nano /etc/aliases
@@ -119,7 +124,7 @@ sudo newaliases
 ![image](https://github.com/user-attachments/assets/f9edc2a2-6d23-4f1a-bd86-9fd0b9ec896b)
 
 
-Sending test mail
+Sending test mail.
 
 ```
 echo "Message for postmaster" | mail -s "Postmaster Test" postmaster@st17.sne24.ru
