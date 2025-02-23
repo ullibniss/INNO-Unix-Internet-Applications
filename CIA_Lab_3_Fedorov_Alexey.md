@@ -127,3 +127,109 @@ echo "Message for postmaster" | mail -s "Postmaster Test" postmaster@st17.sne24.
 
 ![image](https://github.com/user-attachments/assets/4e66d46b-1be8-4657-962b-b433dc05e8ba)
 
+# 2. Mail backup
+
+```
+Remark: we did this part of lab with Niyaz at November. This is reason why here is another environment and ip adresses.
+```
+
+## 4.a. Adapt the DNS information for your domain, so that the backup MTA on your partner’s server can be found.
+
+We reconfigured DNS for mail backup.
+
+![image](https://github.com/user-attachments/assets/54157a0a-0227-40f4-8e59-1bdb0ec8a8a1)
+
+## 4.b Validate by shutting your service down and sending a message to your domain
+
+I shutted down my mail service.
+
+![image](https://github.com/user-attachments/assets/067ded87-0b30-4a0b-bb79-33e6a213ae82)
+
+Niyaz sent me several emails, and they were redirected to his backup service. Emails were stored in queue.
+
+![image](https://github.com/user-attachments/assets/3b9eb716-b413-4e2a-ad73-5ca8a201b045)
+
+## 4.c. Bring your service back up and wait.
+
+I started my email service again.
+
+![image](https://github.com/user-attachments/assets/5e278102-5ce9-4ac6-aab7-99f37f1eeb48)
+
+After waiting for 8-10 minunes I got Niyaz messages.
+
+![image](https://github.com/user-attachments/assets/07c42e7f-786d-4e30-acce-c526bc25f73d)
+
+To force backup server to send messages to original server we can use `flush` command.
+
+![image](https://github.com/user-attachments/assets/32a863fb-e87b-425b-88f3-9ed7d0ba8e32)
+
+## 5.a. Make your MTA act as a backup for your partner’s domain.
+
+We reconfigured DNS server for Niyaz is backup.
+
+![image](https://github.com/user-attachments/assets/112ef509-a7c8-4171-9782-e10817567441)
+
+## 5.b. Show the logs while doing your mate’s acceptance test and show where the message is temporarily stored.
+
+I sent to Niyaz several emails. Here is logs:
+
+![image](https://github.com/user-attachments/assets/a7012bbc-9e03-4e74-a92b-25585fb1b914)
+
+Messages are also stored in queue:
+
+![image](https://github.com/user-attachments/assets/0e5a20fd-8b05-42c6-a31b-c16d432d3231)
+
+## 5.c. Once your partner’s MTA is back online, eventually force an immediate delivery and show your mail logs.
+
+Niyaz is back online and forced email send with `flush` command. It flushed queue by sending messages that are there.
+
+![image](https://github.com/user-attachments/assets/f7abaa82-779c-4939-90ed-782b774e8c24)
+
+
+# 3. Transport Encryption
+
+## 6.a. Which one is better, SSL/TLS or STARTTLS, why?
+
+**SSL/TLS** - are cryptographic protocols designed to provide secure communication over a computer network. Typically used to secure web traffic, email, and other types of data transfers. SSL/TLS establishes a secure connection from the beginning of the communication. The client and server negotiate a secure connection before any data is exchanged.
+
+**STARTTLS** - protocol command used to upgrade an existing insecure connection to a secure one using SSL/TLS. It is commonly used in email protocols (SMTP, IMAP, POP3) to secure communications. STARTTLS starts with an insecure connection and then upgrades it to a secure one. The client and server initially connect in plaintext, and then the STARTTLS command is issued to switch to a secure connection.
+
+As a result, use SSL/TLS if you want a straightforward, secure connection from the start and don't need to support insecure connections on the same port, as it establishes encryption immediately and is simpler to configure. On the other hand, use STARTTLS if you need the flexibility to support both secure and insecure connections on the same port, or if you are working with legacy systems that require this approach, as it allows upgrading an existing insecure connection to a secure one.
+
+## 6.b. Which one is actually in use for SMTP?
+
+**STARTTLS** is the most used method for securing SMTP in modern email systems. It is the standard recommended by organizations like the IETF and is widely supported by email servers and clients.
+
+## 7.a. Add transport encryption to your MTA.
+
+To add encryption for `postfix` we need to generate SSL certificates and keys. I generated it with `openssl` tools. To configure mail server we need to edit `/etc/postfix/main.cf`.
+
+Generated certificates and keys:
+
+![image](https://github.com/user-attachments/assets/d987c42a-1e9e-482a-8630-ff46bd5e61d7)
+
+Configuration:
+
+![image](https://github.com/user-attachments/assets/2799eb74-5f29-4de3-91f1-20b5bccb2935)
+
+## 7.b. Eventually force the transport to be encrypted only (refuse non encrypted transport).
+
+To force SMTP to refuse non encrypted transport, we need to configure `/etc/postfix/master.cf`:
+
+![image](https://github.com/user-attachments/assets/2e96f3be-b836-4807-91ba-8f8d7c22fe7b)
+
+We forces to use encryption on 25 port and also open 587 (STARTTLS port) for encrypted connection.
+
+## 7.c Proceed with validation (proof or acceptance testing), as usual.
+
+We used Wireshark to test encryption. Niyaz sent me email.
+
+![image](https://github.com/user-attachments/assets/18f51c19-a903-4209-87f6-f97531568c67)
+
+As we can see, server uses STARTTLS. It starts with unencrypted connection and encrypts it later.
+
+# References
+
+- https://www.postfix.org/documentation.html
+- https://wiki.dieg.info/postfix_backup_mx
+- https://support.top.host/help/what-are-the-differences-between-ssl/tls-vs-starttls/?lang=en#:~:text=STARTTLS%20differs%20from%20SSL%20and,using%20SSL%20or%20TLS%20protocol.
