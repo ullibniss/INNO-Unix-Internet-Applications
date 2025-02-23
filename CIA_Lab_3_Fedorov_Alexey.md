@@ -8,11 +8,11 @@
 
 ### 1.1.a First make sure that your system does not contain a pre-installed version of the MTA of your choice, if so, remove it before you continue.
 
-First of all I tried to execute binaries called `postman` && `exim`
+First of all, I tried to execute binaries called `postman` && `exim`.
 
 ![image](https://github.com/user-attachments/assets/a1d1d57a-e127-4435-8461-8ad4e9b5fbe5)
 
-I tried to find **Exim** or **Postman** service on my Ubuntu linux:
+I tried to find **Exim** or **Postman** service on my Ubuntu Linux.
 
 ![image](https://github.com/user-attachments/assets/63514132-9657-44fe-b505-d15d83167fa2)
 
@@ -22,13 +22,13 @@ There were no results.
 
 ### 1.1.b Make sure the source code is retrieved from a secure location. Use the official website for the MTA of your choice.
 
-Downloaded postfix source code, signature and gpg public key from offical website `http://955a.fr/ftp.porcupine.org/mirrors/postfix-release/`.
+I Downloaded Postfix source code, signature, and GPG public key from the official website http://955a.fr/ftp.porcupine.org/mirrors/postfix-release/.
 
 ![image](https://github.com/user-attachments/assets/7b98ee24-d488-4fc0-b6f9-fb6605fb0c73)
 
 ### 1.1.c Because it is important that an MTA be correct and secure it is often signed using a digital PGP signature. If your MTA is signed then make sure you have downloaded the correct sources by checking the validity of the key and the signature
 
-I downloaded gpg key from https://github.com/Exim/exim/wiki/EximSecurity. Let's import it.
+I downloaded the GPG key from https://github.com/Exim/exim/wiki/EximSecurity. Let's import it.
 
 ```
 gpg --import wietse.pgp
@@ -36,7 +36,7 @@ gpg --import wietse.pgp
 
 ![image](https://github.com/user-attachments/assets/82631544-c0d2-42a4-ba78-f9ecd4cb7c8c)
 
-Then verify source code.
+Then verify the source code.
 
 ```
 gpg --verify postfix-3.9.1.tar.gz.gpg2 postfix-3.9.1.tar.gz
@@ -46,7 +46,7 @@ gpg --verify postfix-3.9.1.tar.gz.gpg2 postfix-3.9.1.tar.gz
 
 ### 1.1.d There are a number of options that you will have to enter before compilation, so that the functionality can be compiled into the program. Make sure the basic install holds all the necessary functionality. Show the options you configured.
 
-Let's start build. As written in documentation, I need to run make to build one Makefile. After I collected dependecies from the whole internet it worked.
+Let's start the build. As written in the documentation, I need to run `make` to build the Makefile. After I collected dependencies from the whole internet, it worked.
 
 ```
  make -f Makefile.init makefiles
@@ -56,7 +56,7 @@ Let's start build. As written in documentation, I need to run make to build one 
 
 ![image](https://github.com/user-attachments/assets/cbccd101-2c21-41a7-9197-8fd1e9b7d440)
 
-Next step is real make, to build binary file. 
+The next step is to run `make` for real, to build the binary file.
 
 ```
 make
@@ -66,7 +66,7 @@ make
 
 ![image](https://github.com/user-attachments/assets/871226c6-f26b-4445-9db8-a2d2f0f4c703)
 
-And finally installation.
+And finally, installation.
 
 ```
 sudo make install
@@ -75,7 +75,7 @@ sudo make install
 
 ![image](https://github.com/user-attachments/assets/33bf1e2b-042f-41e7-8386-64d0d9174ec9)
 
-There wee options during install. I stayed them default.  
+There were options during installation. I kept them as default. 
 
 ![image](https://github.com/user-attachments/assets/02dec8f9-10cb-4281-816e-edd53be75b87)
 
@@ -87,34 +87,34 @@ Here is my configuration `/etc/postfix/main.cf`:
 
 ![image](https://github.com/user-attachments/assets/cd0d6376-449d-4251-a42b-aa2a2d5b4f9b)
 
-I reconfigured mynetworks and mydestination.
+I reconfigured `mynetworks` and `mydestination`.
 
 ## 3.1 Add a local account on your experimental machine and make sure that the MTA can deliver mail to it. Show the required configuration.
 
-I created user on my machine.
+I created a user on my machine.
 
 ![image](https://github.com/user-attachments/assets/000c81df-13da-47c9-a817-a9baaa05354c)
 
-Then i tried to send mail to it.
+Then I tried to send mail to it.
 
 ```
 echo "Test message for local account" | mail -s "Local Mail Test" test-postfix
 ```
 
-Let's check `test-postfix` user's mail.
+Let's check the `test-postfix` user's mail.
 
 ![image](https://github.com/user-attachments/assets/83cb36f3-350e-46ad-98d1-3123b0b73f4e)
 
 ## 3.2 Add to your log an email received by this account. Do not forget the full headers!
 
-Here is message with all headers:
+Here is message with all headers.
 
 ![image](https://github.com/user-attachments/assets/06dd848b-8b34-44d1-976c-d0aa4137ed32)
 
 
 ## 3.3 Also make sure that any email intended for postmaster@st<X>.sne23.ru is delivered to this account. Show the full email as delivered to the new account and the required configuration.
 
-Lets make alias for mail server and update them.
+Let's create an alias for the mail server and update them.
 
 ```
 sudo nano /etc/aliases
@@ -124,7 +124,7 @@ sudo newaliases
 ![image](https://github.com/user-attachments/assets/f9edc2a2-6d23-4f1a-bd86-9fd0b9ec896b)
 
 
-Sending test mail.
+Sending a test mail.
 
 ```
 echo "Message for postmaster" | mail -s "Postmaster Test" postmaster@st17.sne24.ru
@@ -135,22 +135,22 @@ echo "Message for postmaster" | mail -s "Postmaster Test" postmaster@st17.sne24.
 # 2. Mail backup
 
 ```
-Remark: we did this part of lab with Niyaz at November. This is reason why here is another environment and ip adresses.
+Remark: We did this part of the lab with Niyaz in November. This is the reason why there is another environment and IP addresses.
 ```
 
 ## 4.a. Adapt the DNS information for your domain, so that the backup MTA on your partner’s server can be found.
 
-We reconfigured DNS for mail backup.
+We reconfigured the DNS for mail backup.
 
 ![image](https://github.com/user-attachments/assets/54157a0a-0227-40f4-8e59-1bdb0ec8a8a1)
 
 ## 4.b Validate by shutting your service down and sending a message to your domain
 
-I shutted down my mail service.
+I shut down my mail service.
 
 ![image](https://github.com/user-attachments/assets/067ded87-0b30-4a0b-bb79-33e6a213ae82)
 
-Niyaz sent me several emails, and they were redirected to his backup service. Emails were stored in queue.
+Niyaz sent me several emails, and they were redirected to his backup service. The emails were stored in the queue.
 
 ![image](https://github.com/user-attachments/assets/3b9eb716-b413-4e2a-ad73-5ca8a201b045)
 
@@ -160,33 +160,33 @@ I started my email service again.
 
 ![image](https://github.com/user-attachments/assets/5e278102-5ce9-4ac6-aab7-99f37f1eeb48)
 
-After waiting for 8-10 minunes I got Niyaz messages.
+After waiting for 8–10 minutes, I received Niyaz's messages.
 
 ![image](https://github.com/user-attachments/assets/07c42e7f-786d-4e30-acce-c526bc25f73d)
 
-To force backup server to send messages to original server we can use `flush` command.
+To force the backup server to send messages to the original server, we can use the `flush` command.
 
 ![image](https://github.com/user-attachments/assets/32a863fb-e87b-425b-88f3-9ed7d0ba8e32)
 
 ## 5.a. Make your MTA act as a backup for your partner’s domain.
 
-We reconfigured DNS server for Niyaz is backup.
+We reconfigured the DNS server for Niyaz's backup.
 
 ![image](https://github.com/user-attachments/assets/112ef509-a7c8-4171-9782-e10817567441)
 
 ## 5.b. Show the logs while doing your mate’s acceptance test and show where the message is temporarily stored.
 
-I sent to Niyaz several emails. Here is logs:
+I sent several emails to Niyaz. Here are the logs:
 
 ![image](https://github.com/user-attachments/assets/a7012bbc-9e03-4e74-a92b-25585fb1b914)
 
-Messages are also stored in queue:
+The messages are also stored in the queue.
 
 ![image](https://github.com/user-attachments/assets/0e5a20fd-8b05-42c6-a31b-c16d432d3231)
 
 ## 5.c. Once your partner’s MTA is back online, eventually force an immediate delivery and show your mail logs.
 
-Niyaz is back online and forced email send with `flush` command. It flushed queue by sending messages that are there.
+Niyaz is back online and forced the email to send with the `flush` command. It flushed the queue by sending the messages that were there.
 
 ![image](https://github.com/user-attachments/assets/f7abaa82-779c-4939-90ed-782b774e8c24)
 
@@ -207,7 +207,7 @@ As a result, use SSL/TLS if you want a straightforward, secure connection from t
 
 ## 7.a. Add transport encryption to your MTA.
 
-To add encryption for `postfix` we need to generate SSL certificates and keys. I generated it with `openssl` tools. To configure mail server we need to edit `/etc/postfix/main.cf`.
+To add encryption for `Postfix`, we need to generate SSL certificates and keys. I generated them using the `openssl` tool. To configure the mail server, we need to edit `/etc/postfix/main.cf`.
 
 Generated certificates and keys:
 
@@ -219,19 +219,19 @@ Configuration:
 
 ## 7.b. Eventually force the transport to be encrypted only (refuse non encrypted transport).
 
-To force SMTP to refuse non encrypted transport, we need to configure `/etc/postfix/master.cf`:
+To force SMTP to refuse non-encrypted transport, we need to configure `/etc/postfix/master.cf`.
 
 ![image](https://github.com/user-attachments/assets/2e96f3be-b836-4807-91ba-8f8d7c22fe7b)
 
-We forces to use encryption on 25 port and also open 587 (STARTTLS port) for encrypted connection.
+We forced the use of encryption on port 25 and also opened port 587 (STARTTLS port) for encrypted connections.
 
 ## 7.c Proceed with validation (proof or acceptance testing), as usual.
 
-We used Wireshark to test encryption. Niyaz sent me email.
+We used Wireshark to test encryption. Niyaz sent me an email.
 
 ![image](https://github.com/user-attachments/assets/18f51c19-a903-4209-87f6-f97531568c67)
 
-As we can see, server uses STARTTLS. It starts with unencrypted connection and encrypts it later.
+As we can see, the server uses STARTTLS. It starts with an unencrypted connection and encrypts it later.
 
 # References
 
