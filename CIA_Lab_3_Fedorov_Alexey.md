@@ -8,11 +8,11 @@
 
 ### 1.1.a First make sure that your system does not contain a pre-installed version of the MTA of your choice, if so, remove it before you continue.
 
-First of all, I tried to execute binaries called `postman` && `exim`.
+First of all, I tried to execute binaries called `postfix` && `exim`.
 
 ![image](https://github.com/user-attachments/assets/a1d1d57a-e127-4435-8461-8ad4e9b5fbe5)
 
-I tried to find **Exim** or **Postman** service on my Ubuntu Linux.
+I tried to find **Exim** or **Postfix** service on my Ubuntu Linux.
 
 ![image](https://github.com/user-attachments/assets/63514132-9657-44fe-b505-d15d83167fa2)
 
