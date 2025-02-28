@@ -7,15 +7,15 @@
 
 ## 1.1. Create the first virtual machine using VirtualBox and isolate a private network on your workstation: do not pollute our shared network with your own DHCP service. There are several network settings offered by VirtualBox, choose the right one accordingly and Install your PXE server there. Hint: use two network adapters.
 
-I decided to create Ubuntu 22.04 LTS virtual machine for PXE server.
+I decided to create an Ubuntu 22.04 LTS virtual machine for the PXE server.
 
 ![image](https://github.com/user-attachments/assets/87fc6fe0-2f3f-484d-8f09-bfb78c6b71ec)
 
-Added second interface - Internal Network. First stayed NAT.
+Added a second interface—Internal Network. The first remained NAT.
 
 ![image](https://github.com/user-attachments/assets/b9c5e3a9-cf80-4bcd-9cfe-a2cd1d39cf6d)
 
-UEFI mode enabled.
+UEFI mode is enabled.
 
 ![image](https://github.com/user-attachments/assets/829a2275-c8fa-4968-ac8a-27ff9ef81e39)
 
